@@ -26,9 +26,10 @@ const List = () => {
     return (
         <>
             <h3>리스트</h3>
-            <table>
+            <table className="userListTable">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" /></th>
                         <th>아이디</th>
                         <th>이름</th>
                     </tr>

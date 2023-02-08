@@ -4,6 +4,7 @@ import Main from './view/main';
 
 import Write from './view/write';
 import List from './view/list';
+import './App.css';
 
 const App = () => {
   return (

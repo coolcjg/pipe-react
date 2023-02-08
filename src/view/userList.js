@@ -4,6 +4,7 @@ const UserList = (props) => {
 
     const listItem = userList.map((user) =>
         <tr key={user.userId}>
+            <td><input type="checkbox" /></td>
             <td>{user.userId}</td>
             <td>{user.userName}</td>
         </tr>

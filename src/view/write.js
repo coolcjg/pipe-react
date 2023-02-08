@@ -91,7 +91,7 @@ const Write = () => {
         e.preventDefault();
     }
 
-    const userInsert = () => {
+    async function insertUser() {
         if (inputs.userIdCheck === false) {
             alert('아이디 확인 버튼을 눌러주세요');
             return;
@@ -108,8 +108,6 @@ const Write = () => {
             passwordRefer.current.focus();
             return;
         } else {
-            console.log("Aaa");
-
             if (!checkPassword()) {
                 alert('비밀번호는 숫자 1개 이상, 특수문자 1개 이상, 8~50자리 입니다.');
                 return;
@@ -127,6 +125,23 @@ const Write = () => {
             passwordCheckRefer.current.focus();
             return;
         }
+
+        let form = new FormData();
+        form.append("userId", inputs.userId);
+        form.append("userName", inputs.userName);
+        form.append("password", inputs.password);
+
+        await axios.post('http://localhost:8080/insertUser', form
+        ).then((response) => {
+            if (response.data.status === "200") {
+                alert("아이디가 등록돼었습니다.");
+            } else {
+                alert("아이디가 등록 실패했습니다.");
+            }
+        }).catch((error) => {
+            alert("아이디 생성 요청이 실패했습니다.");
+        })
+
     }
 
     function checkPassword() {
@@ -142,13 +157,8 @@ const Write = () => {
             }
 
             setInputs(nextInputs);
-
-            console.log("1");
-
             return false;
         } else {
-
-            console.log("2");
             return true;
         }
 
@@ -177,7 +187,7 @@ const Write = () => {
                     <input type="password" id="passwordCheck" name="passwordCheck" ref={passwordCheckRefer} onChange={handleChange} />
                 </div>
                 <div>
-                    <button type="submit" onClick={userInsert}>가입</button>
+                    <button type="submit" onClick={insertUser}>가입</button>
                 </div>
             </form>
         </>
