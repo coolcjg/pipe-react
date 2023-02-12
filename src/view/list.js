@@ -28,16 +28,18 @@ const List = () => {
     }
 
     async function deleteUser() {
-        await axios.post(SERVER_DOMAIN + '/deleteUser', {
-            userIdArray: ''
-        })
+        const formData = new FormData();
+        formData.append("checkItems", checkItems);
+
+        await axios.post(SERVER_DOMAIN + '/deleteUser', formData)
             .then((response) => {
-                console.log(response);
-                setUserList(response.data.list);
+                alert(response.data.successCount + "개 삭제 성공");
+                setCheckItems([]);
+                userListSelect();
             })
             .catch((error) => {
                 console.error(error);
-            })
+            });
     }
 
     const checkAll = (checked) => {
@@ -67,7 +69,7 @@ const List = () => {
             <table className="userListTable">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" onChange={(e) => checkAll(e.target.checked)} checked={checkItems.length === userList.length ? true : false} /></th>
+                        <th><input type="checkbox" onChange={(e) => checkAll(e.target.checked)} checked={checkItems.length !== 0 && checkItems.length === userList.length ? true : false} /></th>
                         <th>아이디</th>
                         <th>이름</th>
                     </tr>
