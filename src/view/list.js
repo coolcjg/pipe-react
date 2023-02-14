@@ -1,12 +1,25 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useLocation } from 'react-router-dom';
+import qs from "qs";
 export const SERVER_DOMAIN = `${process.env.REACT_APP_SERVER_DOMAIN}`
 
 const List = () => {
-    const baseUrl = SERVER_DOMAIN + '/userList';
+
+    const location = useLocation();
+
+    const query = qs.parse(location.search, {
+        ignoreQueryPrefix: true,
+    });
 
     const [userList, setUserList] = useState([]);
     const [checkItems, setCheckItems] = useState([]);
+    const [pageInfo, setPageInfo] = useState({
+        page: 0
+        , totalPage: 1
+    });
+
+    const baseUrl = SERVER_DOMAIN + '/userList?page=' + query.page;
 
     useEffect(() => {
         userListSelect();
@@ -15,11 +28,11 @@ const List = () => {
     async function userListSelect() {
         await axios.get(baseUrl)
             .then((response) => {
-                console.log(response);
                 setUserList(response.data.list);
+                setPageInfo(response.data.pageInfo);
             })
             .catch((error) => {
-                console.error(error);
+                alert(error.code);
             })
     }
 
@@ -63,6 +76,15 @@ const List = () => {
         }
     };
 
+    const displayPage = () => {
+        const result = [];
+        for (let i = 1; i <= pageInfo.totalPage; i++) {
+            result.push(<a key={i} href={"/list?page=" + i}> {i}</a >);
+        }
+
+        return result;
+    }
+
     return (
         <>
             <h3>리스트</h3>
@@ -86,6 +108,12 @@ const List = () => {
                     }
                 </tbody>
             </table>
+
+            <div>
+                {displayPage()}
+            </div>
+
+
             <div>
                 <button onClick={goWriteForm}>등록</button>
                 <button onClick={deleteUser}>삭제</button>
