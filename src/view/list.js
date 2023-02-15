@@ -1,10 +1,13 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import qs from "qs";
 export const SERVER_DOMAIN = `${process.env.REACT_APP_SERVER_DOMAIN}`
 
 const List = () => {
+
+    const searchTypeRef = useRef('all');
+    const searchTextRef = useRef('');
 
     const location = useLocation();
 
@@ -15,21 +18,23 @@ const List = () => {
     const [userList, setUserList] = useState([]);
     const [checkItems, setCheckItems] = useState([]);
     const [pageInfo, setPageInfo] = useState({
-        page: 0
-        , totalPage: 1
+        page: query.page !== undefined ? query.page : 1
+        , searchType: query.searchType !== undefined ? query.searchType : ''
+        , searchText: query.searchText !== undefined ? query.searchText : ''
     });
 
-    const baseUrl = SERVER_DOMAIN + '/userList?page=' + query.page;
+    const [totalPage, setTotalPage] = useState(1);
 
     useEffect(() => {
-        userListSelect();
-    }, []);
+        userListSelect(pageInfo);
+    }, [pageInfo]);
 
-    async function userListSelect() {
-        await axios.get(baseUrl)
+    function userListSelect(pageInfo) {
+
+        axios.get(SERVER_DOMAIN + '/userList?page=' + pageInfo.page + '&searchType=' + pageInfo.searchType + '&searchText=' + pageInfo.searchText)
             .then((response) => {
                 setUserList(response.data.list);
-                setPageInfo(response.data.pageInfo);
+                setTotalPage(response.data.pageInfo.totalPage);
             })
             .catch((error) => {
                 alert(error.code);
@@ -76,10 +81,18 @@ const List = () => {
         }
     };
 
+    function setPage(page) {
+        setPageInfo({ ...pageInfo, "page": page });
+    }
+
+    function search() {
+        setPageInfo({ ...pageInfo, "searchType": searchTypeRef.current.value, "searchText": searchTextRef.current.value });
+    }
+
     const displayPage = () => {
         const result = [];
-        for (let i = 1; i <= pageInfo.totalPage; i++) {
-            result.push(<a key={i} href={"/list?page=" + i}> {i}</a >);
+        for (let i = 1; i <= totalPage; i++) {
+            result.push(<a key={i} href="#?" onClick={() => { setPage(i) }}>{i} </a>);
         }
 
         return result;
@@ -88,6 +101,7 @@ const List = () => {
     return (
         <>
             <h3>리스트</h3>
+
             <table className="userListTable">
                 <thead>
                     <tr>
@@ -108,16 +122,26 @@ const List = () => {
                     }
                 </tbody>
             </table>
+            <div>
+                <button onClick={goWriteForm}>등록</button>
+                <button onClick={deleteUser}>삭제</button>
+            </div>
 
             <div>
                 {displayPage()}
             </div>
 
-
             <div>
-                <button onClick={goWriteForm}>등록</button>
-                <button onClick={deleteUser}>삭제</button>
+                <select ref={searchTypeRef}>
+                    <option value="all">전체</option>
+                    <option value="userId">아이디</option>
+                    <option value="userName">이름</option>
+                </select>
+                <input type="text" ref={searchTextRef}></input>
+                <button type="submit" onClick={search}>검색</button>
             </div>
+
+
 
         </>
     )

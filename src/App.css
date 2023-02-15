@@ -6,3 +6,7 @@
 .userListTable th, td {
   border: 1px solid #000000;
 }
+
+a{
+  text-decoration: none;
+}
