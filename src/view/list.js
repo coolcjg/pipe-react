@@ -46,6 +46,12 @@ const List = () => {
     }
 
     async function deleteUser() {
+
+        if (checkItems.length === 0) {
+            alert('삭제할 아이디를 선택하세요');
+            return;
+        }
+
         const formData = new FormData();
         formData.append("checkItems", checkItems);
 
@@ -53,7 +59,8 @@ const List = () => {
             .then((response) => {
                 alert(response.data.successCount + "개 삭제 성공");
                 setCheckItems([]);
-                userListSelect();
+                setPageInfo({ ...pageInfo, "page": 1 });
+                userListSelect(pageInfo);
             })
             .catch((error) => {
                 console.error(error);
@@ -86,7 +93,7 @@ const List = () => {
     }
 
     function search() {
-        setPageInfo({ ...pageInfo, "searchType": searchTypeRef.current.value, "searchText": searchTextRef.current.value });
+        setPageInfo({ ...pageInfo, "page": 1, "searchType": searchTypeRef.current.value, "searchText": searchTextRef.current.value });
     }
 
     const displayPage = () => {
@@ -97,6 +104,13 @@ const List = () => {
 
         return result;
     }
+
+    const handleOnKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            search();
+        }
+    }
+
 
     return (
         <>
@@ -137,7 +151,7 @@ const List = () => {
                     <option value="userId">아이디</option>
                     <option value="userName">이름</option>
                 </select>
-                <input type="text" ref={searchTextRef}></input>
+                <input type="text" ref={searchTextRef} onKeyUp={handleOnKeyPress}></input>
                 <button type="submit" onClick={search}>검색</button>
             </div>
 

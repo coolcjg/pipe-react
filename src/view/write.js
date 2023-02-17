@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 const Write = () => {
 
+    const navigate = useNavigate();
     const userNameRefer = useRef(null);
     const passwordRefer = useRef(null);
     const passwordCheckRefer = useRef(null);
@@ -135,6 +137,7 @@ const Write = () => {
         ).then((response) => {
             if (response.data.status === "200") {
                 alert("아이디가 등록돼었습니다.");
+                navigate('/list');
             } else {
                 alert("아이디가 등록 실패했습니다.");
             }
