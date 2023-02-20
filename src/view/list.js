@@ -10,7 +10,6 @@ const List = () => {
     const searchTextRef = useRef('');
 
     const location = useLocation();
-
     const query = qs.parse(location.search, {
         ignoreQueryPrefix: true,
     });
@@ -116,7 +115,7 @@ const List = () => {
         <>
             <h3>리스트</h3>
 
-            <table className="userListTable">
+            <table>
                 <thead>
                     <tr>
                         <th><input type="checkbox" onChange={(e) => checkAll(e.target.checked)} checked={checkItems.length !== 0 && checkItems.length === userList.length ? true : false} /></th>
@@ -129,7 +128,7 @@ const List = () => {
                         userList.map((user) =>
                             <tr key={user.userId}>
                                 <td><input type="checkbox" name="userCheckBox" checked={checkItems.includes(user.userId)} onChange={(e) => checkSingle(user.userId, e.target.checked)} /></td>
-                                <td>{user.userId}</td>
+                                <td><a href={"/view?userId=" + user.userId}>{user.userId}</a ></td>
                                 <td>{user.userName}</td>
                             </tr>
                         )
