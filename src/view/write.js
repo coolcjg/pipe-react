@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from "react-datepicker";
+import "../react-datepicker.css";
+
+
 import axios from "axios";
 
 const Write = () => {
@@ -8,14 +12,20 @@ const Write = () => {
     const userNameRefer = useRef(null);
     const passwordRefer = useRef(null);
     const passwordCheckRefer = useRef(null);
+    const birthDayRefer = useRef(null);
+
+
 
     const [inputs, setInputs] = useState({
         userId: '',
         userIdCheck: false,
         userName: '',
+        birthDay: new Date(),
         password: '',
         passwordCheck: '',
     });
+
+    const [birthDay, setBirthDay] = useState(new Date());
 
     useEffect(() => {
     }, []);
@@ -133,6 +143,14 @@ const Write = () => {
         form.append("userName", inputs.userName);
         form.append("password", inputs.password);
 
+        let year = birthDayRefer.current.props.selected.getFullYear();
+        let month = birthDayRefer.current.props.selected.getMonth() + 1;
+        month = ('00' + month).slice(-2);
+        let day = birthDayRefer.current.props.selected.getDate();
+        day = ('00' + day).slice(-2);
+        let birthDay = year + "-" + month + "-" + day + " 00:00";
+        form.append("birthDayParam", birthDay);
+
         await axios.post('http://localhost:8080/insertUser', form
         ).then((response) => {
             if (response.data.status === "200") {
@@ -173,24 +191,34 @@ const Write = () => {
 
             <form onSubmit={stopEvent}>
                 <div>
-                    <label htmlFor="userId">아이디</label>
-                    <input type="text" id="userId" name="userId" value={inputs.userId} onChange={handleChange} />
-                    <input type="button" id="userIdCheck" value="아이디 확인" onClick={checkUserId} />
-                </div>
-                <div>
-                    <label htmlFor="userName">이름</label>
-                    <input type="text" id="userName" name="userName" ref={userNameRefer} value={inputs.userName} onChange={handleChange} />
-                </div>
-                <div>
-                    <label htmlFor="password">비밀번호</label>
-                    <input type="password" id="password" name="password" ref={passwordRefer} onChange={handleChange} />
-                </div>
-                <div>
-                    <label htmlFor="password2">비밀번호 확인</label>
-                    <input type="password" id="passwordCheck" name="passwordCheck" ref={passwordCheckRefer} onChange={handleChange} />
-                </div>
-                <div>
-                    <button type="submit" onClick={insertUser}>가입</button>
+                    <div>
+                        <label htmlFor="userId">아이디</label>
+                        <input type="text" id="userId" name="userId" value={inputs.userId} onChange={handleChange} />
+                        <input type="button" id="userIdCheck" value="아이디 확인" onClick={checkUserId} />
+                    </div>
+                    <div>
+                        <label htmlFor="userName">이름</label>
+                        <input type="text" id="userName" name="userName" ref={userNameRefer} value={inputs.userName} onChange={handleChange} />
+                    </div>
+
+                    <div className="w100 displayFlex">
+                        <label htmlFor="birthDay">생일</label>
+                        <div>
+                            <DatePicker ref={birthDayRefer} selected={birthDay} dateFormat="yyyy-MM-dd" name="birthDay" onChange={(date) => setBirthDay(date)} />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="password">비밀번호</label>
+                        <input type="password" id="password" name="password" ref={passwordRefer} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label htmlFor="password2">비밀번호 확인</label>
+                        <input type="password" id="passwordCheck" name="passwordCheck" ref={passwordCheckRefer} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <button type="submit" onClick={insertUser}>가입</button>
+                    </div>
                 </div>
             </form>
         </>
