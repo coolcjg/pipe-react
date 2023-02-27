@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
+import { checkPassword } from "../common/common.js"
 import "../react-datepicker.css";
 
 
@@ -49,7 +50,7 @@ const Write = () => {
         await axios.post('http://localhost:8080/checkUserId', {
             userId: inputs.userId
         }).then((response) => {
-            console.log(response);
+
             if (response.data.count === 0) {
                 alert('사용 가능한 아이디입니다.');
 
@@ -119,11 +120,6 @@ const Write = () => {
             alert('비밀번호를 입력해주세요');
             passwordRefer.current.focus();
             return;
-        } else {
-            if (!checkPassword()) {
-                alert('비밀번호는 숫자 1개 이상, 특수문자 1개 이상, 8~50자리 입니다.');
-                return;
-            }
         }
 
         if (inputs.passwordCheck === '') {
@@ -135,6 +131,20 @@ const Write = () => {
         if (inputs.password !== inputs.passwordCheck) {
             alert('비밀번호가 일치하지 않습니다.');
             passwordCheckRefer.current.focus();
+            return;
+        }
+
+        if (!checkPassword(inputs.password)) {
+
+            const nextInputs = {
+                ...inputs,
+                password: '',
+                passwordCheck: '',
+            }
+
+            setInputs(nextInputs);
+
+            alert('비밀번호는 숫자 1개 이상, 특수문자 1개 이상, 8~50자리 입니다.');
             return;
         }
 
@@ -165,24 +175,8 @@ const Write = () => {
 
     }
 
-    function checkPassword() {
-        const passwordReg = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()\-_+=/\[\{\]\}\\|;:'",<.>?]{1,50})(?=.*[a-zA-Z_]{1,50}).{3,50}/g;
-
-        console.log("input password : " + inputs.password);
-
-
-        if (!passwordReg.test(inputs.password)) {
-            const nextInputs = {
-                ...inputs,
-                password: '',
-            }
-
-            setInputs(nextInputs);
-            return false;
-        } else {
-            return true;
-        }
-
+    const list = () => {
+        navigate('/list');
     }
 
     return (
@@ -210,14 +204,15 @@ const Write = () => {
 
                     <div>
                         <label htmlFor="password">비밀번호</label>
-                        <input type="password" id="password" name="password" ref={passwordRefer} onChange={handleChange} />
+                        <input type="password" id="password" name="password" value={inputs.password} ref={passwordRefer} onChange={handleChange} />
                     </div>
                     <div>
                         <label htmlFor="password2">비밀번호 확인</label>
-                        <input type="password" id="passwordCheck" name="passwordCheck" ref={passwordCheckRefer} onChange={handleChange} />
+                        <input type="password" id="passwordCheck" name="passwordCheck" value={inputs.passwordCheck} ref={passwordCheckRefer} onChange={handleChange} />
                     </div>
                     <div>
                         <button type="submit" onClick={insertUser}>가입</button>
+                        <button id="" onClick={list}>목록</button>
                     </div>
                 </div>
             </form>

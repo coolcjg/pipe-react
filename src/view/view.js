@@ -14,7 +14,8 @@ const View = () => {
 
     const [user, setUser] = useState({
         userId: '',
-        userName: ''
+        userName: '',
+        birthDay: '',
     });
 
     useEffect(() => {
@@ -39,6 +40,10 @@ const View = () => {
         navigate('/modify?userId=' + query.userId);
     }
 
+    const list = () => {
+        navigate('/list');
+    }
+
     return (
         <>
             <h1>상세</h1>
@@ -53,11 +58,17 @@ const View = () => {
                         <td><label htmlFor="userId">이름</label></td>
                         <td>{user.userName}</td>
                     </tr>
+
+                    <tr>
+                        <td><label htmlFor="birthDay">생일</label></td>
+                        <td>{user.birthDay.split("T")[0]}</td>
+                    </tr>
                 </tbody>
             </table>
 
             <div>
                 <button id="updateUser" onClick={modify}>수정</button>
+                <button id="" onClick={list}>목록</button>
             </div>
         </>
     )
