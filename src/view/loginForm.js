@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { sha256 } from 'js-sha256';
 import axios from "axios";
+import { setCookie } from '../common/cookie';
+import { useSelector, useDispatch } from 'react-redux';
+
 
 const LoginForm = () => {
 
@@ -31,6 +34,18 @@ const LoginForm = () => {
 
             console.log(response);
 
+            if (response.data.jwt) {
+
+                setCookie("token", `${response.data.jwt}`, {
+                    path: "/",
+                    sameSite: "strict",
+                });
+
+
+                setUser(response.data.user.userId);
+
+            }
+
 
 
         }).catch((error) => {
@@ -45,6 +60,32 @@ const LoginForm = () => {
         }
     }
 
+    const dispatch = useDispatch();
+
+    const { value } = useSelector(state => state.value);
+    const { count } = useSelector(state => state.count);
+    const { userId } = useSelector(state => state.user);
+
+    const addValue = () => {
+        dispatch({ type: 'increment' })
+    }
+
+    const subValue = () => {
+        dispatch({ type: 'decrement' })
+    }
+
+    const resetValue = () => {
+        dispatch({ type: 'reset' })
+    }
+
+    const pushButton = () => {
+        dispatch({ type: 'push' })
+    }
+
+    const setUser = (userId) => {
+        dispatch({ type: 'login', payload: userId })
+    }
+
     return (
         <>
             <div>
@@ -57,6 +98,15 @@ const LoginForm = () => {
                 </div>
                 <button onClick={login}>로그인</button>
             </div>
+
+            <div> userId:{userId}</div>
+            <div> value:{value}</div>
+            <button onClick={addValue}>+</button>
+            <button onClick={subValue}>-</button>
+            <button onClick={resetValue}>reset</button>
+
+            <div>count:{count}</div>
+            <button onClick={pushButton}>push</button>
         </>
     )
 }

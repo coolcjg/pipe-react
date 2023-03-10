@@ -2,7 +2,11 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import qs from "qs";
+import { useSelector } from 'react-redux';
+
 export const SERVER_DOMAIN = `${process.env.REACT_APP_SERVER_DOMAIN}`
+
+
 
 const List = () => {
 
@@ -23,6 +27,8 @@ const List = () => {
     });
 
     const [totalPage, setTotalPage] = useState(1);
+
+    const { userId } = useSelector(state => state.user);
 
     useEffect(() => {
         userListSelect(pageInfo);
@@ -111,9 +117,11 @@ const List = () => {
     }
 
 
+
+
     return (
         <>
-            <h3>리스트</h3>
+            <h3>리스트{userId}</h3>
 
             <table>
                 <thead>
