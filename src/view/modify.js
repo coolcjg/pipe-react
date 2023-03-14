@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { checkPassword } from "../common/common.js"
+import { sha256 } from 'js-sha256';
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import qs from "qs";
@@ -106,7 +107,7 @@ const Modify = () => {
         let form = new FormData();
         form.append("userId", inputs.userId);
         form.append("userName", inputs.userName);
-        form.append("password", inputs.password);
+        form.append("password", sha256(inputs.password));
 
         let year = birthDayRefer.current.props.selected.getFullYear();
         let month = birthDayRefer.current.props.selected.getMonth() + 1;

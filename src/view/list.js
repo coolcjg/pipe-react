@@ -28,7 +28,7 @@ const List = () => {
 
     const [totalPage, setTotalPage] = useState(1);
 
-    const { userId } = useSelector(state => state.user);
+    const { userId, jwt } = useSelector(state => state.user);
 
     useEffect(() => {
         userListSelect(pageInfo);
@@ -121,7 +121,7 @@ const List = () => {
 
     return (
         <>
-            <h3>리스트{userId}</h3>
+            <h3>리스트{userId}{jwt}</h3>
 
             <table>
                 <thead>

@@ -12,13 +12,7 @@ const LoginForm = () => {
         , password: ''
     })
 
-    const handleChange = (e) => {
 
-        const name = e.target.name;
-        const value = e.target.value;
-
-        setInputs({ ...inputs, [name]: value })
-    }
 
     const login = () => {
 
@@ -42,7 +36,7 @@ const LoginForm = () => {
                 });
 
 
-                setUser(response.data.user.userId);
+                setUser(response.data.user.userId, response.data.jwt);
 
             }
 
@@ -82,8 +76,22 @@ const LoginForm = () => {
         dispatch({ type: 'push' })
     }
 
-    const setUser = (userId) => {
-        dispatch({ type: 'login', payload: userId })
+    const setUser = (userId, jwt) => {
+        dispatch({ type: 'login', userId: userId, jwt: jwt })
+    }
+
+    function logout() {
+
+    }
+
+    function handleChange(e) {
+
+        console.log("Aa");
+
+        const name = e.target.name;
+        const value = e.target.value;
+
+        setInputs({ ...inputs, [name]: value })
     }
 
     return (
