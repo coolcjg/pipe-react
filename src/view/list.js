@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import qs from "qs";
 import { useSelector } from 'react-redux';
-
+import LoginStatus from './loginStatus'
 export const SERVER_DOMAIN = `${process.env.REACT_APP_SERVER_DOMAIN}`
 
 
@@ -121,28 +121,34 @@ const List = () => {
 
     return (
         <>
-            <h3>리스트{userId}{jwt}</h3>
+            <LoginStatus />
 
-            <table>
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" onChange={(e) => checkAll(e.target.checked)} checked={checkItems.length !== 0 && checkItems.length === userList.length ? true : false} /></th>
-                        <th>아이디</th>
-                        <th>이름</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        userList.map((user) =>
-                            <tr key={user.userId}>
-                                <td><input type="checkbox" name="userCheckBox" checked={checkItems.includes(user.userId)} onChange={(e) => checkSingle(user.userId, e.target.checked)} /></td>
-                                <td><a href={"/view?userId=" + user.userId}>{user.userId}</a ></td>
-                                <td>{user.userName}</td>
-                            </tr>
-                        )
-                    }
-                </tbody>
-            </table>
+            <div>
+                <h1>리스트</h1>
+            </div>
+
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" onChange={(e) => checkAll(e.target.checked)} checked={checkItems.length !== 0 && checkItems.length === userList.length ? true : false} /></th>
+                            <th>아이디</th>
+                            <th>이름</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            userList.map((user) =>
+                                <tr key={user.userId}>
+                                    <td><input type="checkbox" name="userCheckBox" checked={checkItems.includes(user.userId)} onChange={(e) => checkSingle(user.userId, e.target.checked)} /></td>
+                                    <td><a href={"/view?userId=" + user.userId}>{user.userId}</a ></td>
+                                    <td>{user.userName}</td>
+                                </tr>
+                            )
+                        }
+                    </tbody>
+                </table>
+            </div>
             <div>
                 <button onClick={goWriteForm}>등록</button>
                 <button onClick={deleteUser}>삭제</button>

@@ -3,6 +3,7 @@ import { sha256 } from 'js-sha256';
 import axios from "axios";
 import { setCookie } from '../common/cookie';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 
 const LoginForm = () => {
@@ -12,7 +13,7 @@ const LoginForm = () => {
         , password: ''
     })
 
-
+    const navigate = useNavigate();
 
     const login = () => {
 
@@ -28,19 +29,24 @@ const LoginForm = () => {
 
             console.log(response);
 
-            if (response.data.jwt) {
+            if (response.data.code === 200 && response.data.jwt) {
 
+                /*
                 setCookie("token", `${response.data.jwt}`, {
                     path: "/",
                     sameSite: "strict",
                 });
-
+                */
 
                 setUser(response.data.user.userId, response.data.jwt);
-
+                navigate('/list');
+            } else if (response.data.code === 401) {
+                alert('해당되는 ID가 없습니다.');
+            } else if (response.data.code === 402) {
+                alert('비밀번호가 맞지 않습니다.');
+            } else {
+                alert('알 수 없는 오류입니다.');
             }
-
-
 
         }).catch((error) => {
             console.error(error);
@@ -78,10 +84,6 @@ const LoginForm = () => {
 
     const setUser = (userId, jwt) => {
         dispatch({ type: 'login', userId: userId, jwt: jwt })
-    }
-
-    function logout() {
-
     }
 
     function handleChange(e) {

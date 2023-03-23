@@ -20,6 +20,7 @@ export default function userReducer(state = initialState, action) {
             return {
                 ...state
                 , userId: ''
+                , jwt: ''
             }
         }
         case 'getUserId': {

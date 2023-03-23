@@ -1,27 +1,52 @@
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
 const LoginStatus = () => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const { userId, jwt } = useSelector(state => state.user);
+
     const loginForm = () => {
         navigate('/loginForm');
     }
 
-    return (
-        <>
-            <div>
+    const logout = () => {
+        if (window.confirm('로그아웃하시겠습니까?')) {
+
+            dispatch({ type: 'login' });
+            navigate('/loginForm');
+        }
+    }
+
+    if (userId !== "") {
+        return (
+            <>
                 <div>
-                    <button onClick={loginForm}>로그인</button>
+                    <div className="inlineBlock">
+                        <p>{userId}</p>
+                    </div>
+                    <div className="inlineBlock">
+                        <button onClick={logout}>로그아웃</button>
+                    </div>
                 </div>
+            </>
 
+        )
+    } else {
+
+        return (
+            <>
                 <div>
-                    <p>아이디</p>
+                    <div>
+                        <button onClick={loginForm}>로그인</button>
+                    </div>
                 </div>
-            </div>
-        </>
+            </>
+        )
 
-    )
-
+    }
 }
 
 export default LoginStatus;
