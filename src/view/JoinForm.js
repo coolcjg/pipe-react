@@ -8,7 +8,7 @@ import "../react-datepicker.css";
 
 import axios from "axios";
 
-const Write = () => {
+const JoinForm = () => {
 
     const navigate = useNavigate();
     const userNameRefer = useRef(null);
@@ -166,7 +166,7 @@ const Write = () => {
         ).then((response) => {
             if (response.data.status === "200") {
                 alert("아이디가 등록돼었습니다.");
-                navigate('/list');
+                navigate('/loginForm');
             } else {
                 alert("아이디가 등록 실패했습니다.");
             }
@@ -221,4 +221,4 @@ const Write = () => {
     )
 }
 
-export default Write;
+export default JoinForm;

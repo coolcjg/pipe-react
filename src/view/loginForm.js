@@ -96,6 +96,10 @@ const LoginForm = () => {
         setInputs({ ...inputs, [name]: value })
     }
 
+    const joinForm = () => {
+        navigate('/joinForm');
+    }
+
     return (
         <>
             <div>
@@ -107,6 +111,7 @@ const LoginForm = () => {
                     <input type="password" id="password" name="password" placeholder="비밀번호" onChange={handleChange} onKeyUp={handleOnKeyPress} />
                 </div>
                 <button onClick={login}>로그인</button>
+                <button onClick={joinForm}>회원가입</button>
             </div>
 
             <div> userId:{userId}</div>

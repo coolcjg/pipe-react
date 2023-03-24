@@ -20,7 +20,7 @@ const LoginStatus = () => {
         }
     }
 
-    if (userId !== "") {
+    if (userId !== "" && userId !== undefined) {
         return (
             <>
                 <div>

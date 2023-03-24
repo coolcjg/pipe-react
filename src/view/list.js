@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import qs from "qs";
 import { useSelector } from 'react-redux';
 import LoginStatus from './loginStatus'
@@ -14,6 +14,8 @@ const List = () => {
     const searchTextRef = useRef('');
 
     const location = useLocation();
+    const navigate = useNavigate();
+
     const query = qs.parse(location.search, {
         ignoreQueryPrefix: true,
     });
@@ -36,18 +38,27 @@ const List = () => {
 
     function userListSelect(pageInfo) {
 
-        axios.get(SERVER_DOMAIN + '/userList?page=' + pageInfo.page + '&searchType=' + pageInfo.searchType + '&searchText=' + pageInfo.searchText)
-            .then((response) => {
-                setUserList(response.data.list);
-                setTotalPage(response.data.pageInfo.totalPage);
-            })
-            .catch((error) => {
-                alert(error.code);
-            })
+        const url = SERVER_DOMAIN + '/userList?page=' + pageInfo.page + '&searchType=' + pageInfo.searchType + '&searchText=' + pageInfo.searchText;
+        const jwtHeader = { headers: { "Authorization": `Bearer ${jwt}` } };
+
+        if (jwt === '' || jwt === undefined) {
+            alert('로그인이 필요합니다.');
+            navigate('/loginForm');
+        } else {
+            axios.get(url, jwtHeader)
+                .then((response) => {
+                    setUserList(response.data.list);
+                    setTotalPage(response.data.pageInfo.totalPage);
+                })
+                .catch((error) => {
+                    alert(error.code);
+                })
+        }
+
     }
 
-    const goWriteForm = () => {
-        document.location.href = '/write';
+    const joinForm = () => {
+        document.location.href = '/joinForm';
     }
 
     async function deleteUser() {
@@ -150,7 +161,7 @@ const List = () => {
                 </table>
             </div>
             <div>
-                <button onClick={goWriteForm}>등록</button>
+                <button onClick={joinForm}>등록</button>
                 <button onClick={deleteUser}>삭제</button>
             </div>
 
